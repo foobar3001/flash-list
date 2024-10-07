@@ -9,6 +9,7 @@ import {
 
 import { BlankAreaEventHandler } from "./native/auto-layout/AutoLayoutView";
 import ViewToken from "./viewability/ViewToken";
+import { TOnItemStatusChanged } from "recyclerlistview/dist/reactnative/core/ViewabilityTracker";
 
 export interface ListRenderItemInfo<TItem> {
   item: TItem;
@@ -250,6 +251,12 @@ export interface FlashListProps<TItem> extends ScrollViewProps {
     | ((info: { viewableItems: ViewToken[]; changed: ViewToken[] }) => void)
     | null
     | undefined;
+
+  /**
+   * Provides visible index;
+   * This prop is inherited from RecyclerListView.
+   */
+  onVisibleIndicesChanged?: TOnItemStatusChanged;
 
   /**
    * If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality.

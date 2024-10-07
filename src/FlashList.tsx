@@ -381,11 +381,12 @@ class FlashList<T> extends React.PureComponent<
           initialOffset={initialOffset}
           onItemLayout={this.onItemLayout}
           onScroll={this.onScroll}
-          onVisibleIndicesChanged={
-            this.viewabilityManager.shouldListenToVisibleIndices
-              ? this.viewabilityManager.onVisibleIndicesChanged
-              : undefined
-          }
+          onVisibleIndicesChanged={(all, ...rest) => {
+            this.props.onVisibleIndicesChanged?.(all, ...rest);
+            if(this.viewabilityManager.shouldListenToVisibleIndices){
+              return this.viewabilityManager.onVisibleIndicesChanged(all);
+            }
+          }}
           windowCorrectionConfig={this.getUpdatedWindowCorrectionConfig()}
           itemAnimator={this.itemAnimator}
           suppressBoundedSizeException
