@@ -7,6 +7,7 @@ export {
   RenderTarget,
   RenderTargetOptions,
 } from "./FlashListProps";
+export { default as FlashListWithIndicesBasedIndicator } from "./FlashListWithIndicesBasedIndicator";
 export { default as AnimatedFlashList } from "./AnimatedFlashList";
 export {
   useOnNativeBlankAreaEvents,
