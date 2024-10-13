@@ -7,7 +7,7 @@ interface Layout {
    height: number;
 }
 interface Props<T> extends FlashListProps<T> {
-   customRef?: MutableRefObject<FlashList<T>>;
+   customRef?: MutableRefObject<FlashList<T> | null>;
    indicatorWidth?: number;
 }
 
