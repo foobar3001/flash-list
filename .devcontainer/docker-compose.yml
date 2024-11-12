@@ -1,0 +1,12 @@
+version: "3"
+services:
+   foobar3000-flash-list:
+      build:
+         context: .
+         dockerfile: ./Dockerfile
+      volumes:
+         - ..:/workspaces/foobar3000-flash-list:cached
+      # ports:
+      #    - "8081:8081"
+      # environment:
+      #    - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.0.31
