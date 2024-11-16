@@ -171,7 +171,7 @@ const FlashListWithIndicesBasedIndicator = <T,>(props: Props<T>) => {
     // inner
     flashListRef.current = el;
     // outer
-    if (props.customRef?.current != null) {
+    if (props.customRef != null) {
       props.customRef.current = el;
     }
   };
