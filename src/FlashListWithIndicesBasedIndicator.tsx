@@ -1,5 +1,11 @@
 /* eslint-disable import/order */
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Animated,
   LayoutChangeEvent,
@@ -86,6 +92,13 @@ const calcIndicatorPosition = ({
 };
 
 const FlashListWithIndicesBasedIndicator = <T,>(props: Props<T>) => {
+  const {
+    onLayout,
+    onContentSizeChange,
+    onVisibleIndicesChanged,
+    ...restProps
+  } = props;
+
   const [visibleIndexes, setVisibleIndexes] = useState<{
     startIndex: number;
     endIndex: number;
@@ -143,38 +156,52 @@ const FlashListWithIndicesBasedIndicator = <T,>(props: Props<T>) => {
     props.data?.length,
   ]);
 
-  const handleLayout = (event: LayoutChangeEvent) => {
-    const { height } = event.nativeEvent.layout;
-    setWholeAreaHeight(height);
-  };
+  const handleLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const { height } = event.nativeEvent.layout;
+      setWholeAreaHeight(height);
+      // pass to props
+      onLayout?.(event);
+    },
+    [setWholeAreaHeight, onLayout]
+  );
 
-  const handleContentSizeChange = (_: number, contentHeight: number) => {
-    setWholeContentHeight(contentHeight);
-  };
+  const handleContentSizeChange = useCallback(
+    (width: number, contentHeight: number) => {
+      setWholeContentHeight(contentHeight);
 
-  const handleVisibleIndicesChanged = (
-    all: number[],
-    now: number[],
-    notNow: number[]
-  ) => {
-    props.onVisibleIndicesChanged?.(all, now, notNow);
+      // pass to props
+      onContentSizeChange?.(width, contentHeight);
+    },
+    [setWholeContentHeight, onContentSizeChange]
+  );
 
-    const startIndex = all.at(0);
-    const endIndex = all.at(-1);
+  const handleVisibleIndicesChanged = useCallback(
+    (all: number[], now: number[], notNow: number[]) => {
+      const startIndex = all.at(0);
+      const endIndex = all.at(-1);
 
-    if (startIndex != null && endIndex != null) {
-      setVisibleIndexes({ startIndex, endIndex });
-    }
-  };
+      if (startIndex != null && endIndex != null) {
+        setVisibleIndexes({ startIndex, endIndex });
+      }
 
-  const setRefs = (el: FlashList<T>) => {
-    // inner
-    flashListRef.current = el;
-    // outer
-    if (props.customRef != null) {
-      props.customRef.current = el;
-    }
-  };
+      // pass to props
+      onVisibleIndicesChanged?.(all, now, notNow);
+    },
+    [onVisibleIndicesChanged, setVisibleIndexes]
+  );
+
+  const setRefs = useCallback(
+    (el: FlashList<T>) => {
+      // inner
+      flashListRef.current = el;
+      // outer
+      if (props.customRef != null) {
+        props.customRef.current = el;
+      }
+    },
+    [props.customRef]
+  );
 
   // optional props
   const indicatorWidth: StyleProp<ViewStyle> =
@@ -189,12 +216,12 @@ const FlashListWithIndicesBasedIndicator = <T,>(props: Props<T>) => {
   return (
     <View style={styles.container}>
       <FlashList
+        {...restProps}
         onLayout={handleLayout}
         onContentSizeChange={handleContentSizeChange}
         onVisibleIndicesChanged={handleVisibleIndicesChanged}
         ref={setRefs}
         showsVerticalScrollIndicator={false}
-        {...props}
       />
       <Animated.View
         style={[
