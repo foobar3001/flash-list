@@ -54,6 +54,14 @@ const calcIndicatorPosition = ({
   const visibleAreaItemNumber = endIndex - startIndex + 1;
   const fixedWholeAreaHeight = wholeAreaHeight ?? 0;
 
+  if (totalItemNumber === 0) {
+    return {
+      indicatorHeight: fixedWholeAreaHeight,
+      indicatorPosition: 0,
+      indicatorCoverWholeArea: true,
+    };
+  }
+
   // |**--------| 0.0
   // |------**--| 0.8
   // |--------**| 1.0
